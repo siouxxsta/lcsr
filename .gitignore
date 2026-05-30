@@ -26,6 +26,7 @@ bin/
 *.lib
 *.dll
 *.exe
+!/tools/**/.exe
 
 # Logs
 *.log
