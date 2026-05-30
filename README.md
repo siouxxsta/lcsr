@@ -1,4 +1,7 @@
-<h1 align="center">Liberty City Stories<br>Revamped</h1>
+
+<p align="center">
+  <img src="assets/images/liberty_city_stories_revamped.png" alt="Liberty City Revamped Logo" width="500">
+</p>
   
 An open-world crime sandbox inspired by the classic 3D-era reverse-engineering project *reVC*.<br> 
 This project aims to fully revive *Grand Theft Auto: Liberty City Stories*, re-engineering the 2000s underworld with `librw` performance, <br>
