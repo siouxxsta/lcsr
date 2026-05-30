@@ -1,0 +1,6 @@
+[submodule "vendor/autoconf"]
+	path = vendor/autoconf
+	url = https://github.com/Blizzard/premake-autoconf
+[submodule "vendor/librw"]
+	path = vendor/librw
+	url = https://github.com/aap/librw.git
