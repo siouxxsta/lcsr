@@ -548,7 +548,11 @@ bool LoadINISettings()
 	ReadIniIfExists("Draw", "FixSprites", &CDraw::ms_bFixSprites);	
 #endif
 #ifdef DRAW_GAME_VERSION_TEXT
-	ReadIniIfExists("General", "DrawVersionText", &gbDrawVersionText);
+	#if defined LCSR_DEBUG
+		gbDrawVersionText = true;
+	#elif
+		ReadIniIfExists("General", "DrawVersionText", &gbDrawVersionText);
+	#endif
 #endif
 #ifdef NO_MOVIES
 	ReadIniIfExists("General", "NoMovies", &gbNoMovies);

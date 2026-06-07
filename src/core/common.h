@@ -340,10 +340,10 @@ void re3_usererror(const char *format, ...);
 #define DEBUGBREAK() __debugbreak();
 
 // Switch to enable development messages.
-#if 1 
+#if 0
 #define DEV(f, ...)
 #else
-#define DEV(f, ...)   re3_debug("[DEV]: " f, ## __VA_ARGS__)
+#define DEV(f, ...)   re3_debug(f, ## __VA_ARGS__)
 #endif
 
 #ifdef __MWERKS__
@@ -352,7 +352,7 @@ void Error(char *f, ...);
 __inline__ void TRACE(char *f, ...) { } // this is re3 only, and so the function needs to be inline - this way no call actually gets placed
 // USERERROR only gets used in oal builds ... once
 #else
-#define debug(f, ...) re3_debug("[DBG]: " f, ## __VA_ARGS__)
+#define debug(f, ...) re3_debug(f, ## __VA_ARGS__)
 #define Error(f, ...) re3_debug("[ERROR]: " f, ## __VA_ARGS__)
 #ifndef MASTER
 #define TRACE(f, ...) re3_trace(__FILE__, __LINE__, __FUNCTION__, f, ## __VA_ARGS__)
