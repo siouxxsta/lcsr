@@ -36,6 +36,9 @@ struct CColTrianglePlane
 	void Set(const CVector &va, const CVector &vb, const CVector &vc);
 	void Set(const CompressedVector *v, CColTriangle &tri) { Set(v[tri.a].Get(), v[tri.b].Get(), v[tri.c].Get()); }
 	void GetNormal(CVector &n) const { n.x = normal.x/4096.0f; n.y = normal.y/4096.0f; n.z = normal.z/4096.0f; }
+	float GetNormalX() const { return normal.x / 4096.0f; }
+	float GetNormalY() const { return normal.y / 4096.0f; }
+	float GetNormalZ() const { return normal.z / 4096.0f; }
 	float CalcPoint(const CVector &v) const { CVector n; GetNormal(n); return DotProduct(n, v) - dist/128.0f; };
 #ifdef GTA_PS2
 	void Unpack(uint128 &qword) const {
