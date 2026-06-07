@@ -31,7 +31,7 @@ extern bool gbShowTimebars;
 #define gbShowTimebars false
 #endif
 
-#ifndef FINAL
+#ifndef LCSR_MASTER
 extern bool gbPrintMemoryUsage;
 #endif
 
@@ -50,8 +50,9 @@ Const char *GetLevelSplashScreen(int level);
 Const char *GetRandomSplashScreen(void);
 void LittleTest(void);
 void ValidateVersion();
+void DisplayGameDebugText();
 void ResetLoadingScreenBar(void);
-#ifndef MASTER
+#ifndef LCSR_MASTER
 void TheModelViewer(void);
 #endif
 

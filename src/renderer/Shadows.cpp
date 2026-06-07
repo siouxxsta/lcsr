@@ -1555,7 +1555,7 @@ CShadows::CastShadowEntityXY(CEntity *pEntity,  float fStartX, float fStartY, fl
 	CColModel *pCol = pEntity->GetColModel();
 	ASSERT(pCol != nil);
 
-#ifndef MASTER
+#ifndef LCSR_MASTER
 	if ( gbPrintShite )
 		printf("MI:%d Triangles:%d Coors:%f %f BBoxXY:%f %f\n",
 			pEntity->GetModelIndex(),

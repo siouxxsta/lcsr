@@ -575,7 +575,7 @@ bool CGame::Initialise(const char* datFile)
 	_TexturePoolsUnknown(true);
 #endif
 
-#ifndef MASTER
+#ifndef LCSR_MASTER
 	PlayerCoords = FindPlayerCoors();
 	VarConsole.Add("X PLAYER COORD", &PlayerCoords.x, 10.0f, -10000.0f, 10000.0f, true);
 	VarConsole.Add("Y PLAYER COORD", &PlayerCoords.y, 10.0f, -10000.0f, 10000.0f, true);
@@ -586,6 +586,11 @@ bool CGame::Initialise(const char* datFile)
 
 	DMAudio.SetStartingTrackPositions(TRUE);
 	DMAudio.ChangeMusicMode(MUSICMODE_GAME);
+
+	#ifndef LCSR_MASTER
+		DisplayGameDebugText();
+	#endif
+
 	return true;
 }
 
