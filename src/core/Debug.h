@@ -4,7 +4,7 @@ class CDebug
 {
 	enum
 	{
-		MAX_LINES = 15,
+		MAX_LINES = 3,
 		MAX_STR_LEN = 80,
 
 		MAX_SCREEN_STRS = 100,

@@ -6,11 +6,15 @@
 #include "main.h"
 #include "Text.h"
 
-bool gbDebugStuffInRelease = false;
+#if defined LCSR_DEBUG
+	bool gbDebugStuffInRelease = true;
+#elif
+	bool gbDebugStuffInRelease = false;
+#endif
 
-#define DEBUG_X_POS (300)
-#define DEBUG_Y_POS (41)
-#define DEBUG_LINE_HEIGHT (22)
+#define DEBUG_X_POS (1)
+#define DEBUG_Y_POS (700)
+#define DEBUG_LINE_HEIGHT (16)
 
 int16 CDebug::ms_nCurrentTextLine;
 char CDebug::ms_aTextBuffer[MAX_LINES][MAX_STR_LEN];
@@ -47,14 +51,14 @@ CDebug::DebugDisplayTextBuffer()
 		int32 i = 0;
 		int32 y = DEBUG_Y_POS;
 #ifdef FIX_BUGS
-		CFont::SetPropOn();
 		CFont::SetBackgroundOff();
-		CFont::SetScale(1.0f, 1.0f);
+		CFont::SetBackgroundColor(CRGBA(0, 0, 0, 128));
+		CFont::SetScale(0.48f, 1.12f);
 		CFont::SetCentreOff();
+		CFont::SetJustifyOff();
+		CFont::SetWrapx(SCREEN_STRETCH_X(DEFAULT_SCREEN_WIDTH));
 		CFont::SetRightJustifyOff();
-		CFont::SetJustifyOn();
-		CFont::SetRightJustifyWrap(0.0f);
-		CFont::SetBackGroundOnlyTextOff();
+		CFont::SetPropOn();
 		CFont::SetFontStyle(FONT_STANDARD);
 #else
 		// this is not even readable
@@ -81,10 +85,8 @@ CDebug::DebugDisplayTextBuffer()
 				}
 			}
 			AsciiToUnicode(line, gUString);
-			CFont::SetColor(CRGBA(0, 0, 0, 255));
-			CFont::PrintString(DEBUG_X_POS, y-1, gUString);
-			CFont::SetColor(CRGBA(255, 128, 128, 255));
-			CFont::PrintString(DEBUG_X_POS+1, y, gUString);
+			CFont::SetColor(CRGBA(255, 255, 255, 255));
+			CFont::PrintString(SCREEN_SCALE_X(DEBUG_X_POS), y, gUString);
 			y += DEBUG_LINE_HEIGHT;
 		} while (i != MAX_LINES);
 		CFont::DrawFonts();
