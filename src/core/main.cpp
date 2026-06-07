@@ -87,13 +87,22 @@ char gString2[512];
 wchar gUString[256];
 wchar gUString2[256];
 
-float FramesPerSecond = 30.0f;
+// float FramesPerSecond = 30.0f;
+float FramesPerSecond = 170.0f;
 
-bool gbPrintShite = false;
-bool gbModelViewer;
-#ifdef TIMEBARS
-bool gbShowTimebars;
+#if defined LCSR_DEBUG
+	#if defined TIMEBARS
+		bool gbShowTimebars = true;
+	#endif
+	bool gbPrintShite = true;
+#elif
+	#if defined TIMEBARS
+	bool gbShowTimebars = false;
+	#endif
+	bool gbPrintShite = false;
 #endif
+
+bool gbModelViewer;
 #ifdef DRAW_GAME_VERSION_TEXT
 bool gbDrawVersionText; // Our addition, we think it was always enabled on !MASTER builds
 #endif
@@ -1052,9 +1061,12 @@ return;
 void
 DisplayGameDebugText()
 {
-	static bool bDisplayCheatStr = false; // custom
+	static bool bDisplayCheatStr; // custom
 
-#ifndef FINAL
+	char str[200];
+	wchar ustr[200];
+
+	#ifndef LCSR_MASTER
 	{
 		SETTWEAKPATH("Debug");
 		TWEAKBOOL(bDisplayPosn);
@@ -1063,84 +1075,38 @@ DisplayGameDebugText()
 
 	if(gbPrintMemoryUsage)
 		PrintMemoryUsage();
-#endif
+	#endif
 
-	char str[200];
-	wchar ustr[200];
-
-#ifdef DRAW_GAME_VERSION_TEXT
-	wchar ver[200];
-
-	if(gbDrawVersionText) // This realtime switch is our thing
-	{
-
-#ifdef USE_OUR_VERSIONING
-	char verA[200];
-	sprintf(verA,
-#if defined _WIN32
-			"Win "
-#elif defined __linux__
-		    "Linux "
-#elif defined __APPLE__
-		    "Mac OS X "
-#elif defined __FreeBSD__
-		    "FreeBSD "
-#else
-		    "Posix-compliant "
-#endif
-#if defined __LP64__ || defined _WIN64
-			"64-bit "
-#else
-			"32-bit "
-#endif
-#if defined RW_D3D9
-		    "D3D9 "
-#elif defined RWLIBS
-		    "D3D8 "
-#elif defined RW_GL3
-		    "OpenGL "
-#endif
-#if defined AUDIO_OAL
-		    "OAL "
-#elif defined AUDIO_MSS
-		    "MSS "
-#endif
-#if defined _DEBUG || defined DEBUG
-		    "DEBUG "
-#endif
-		    "%.8s",
-		    g_GIT_SHA1);
-	AsciiToUnicode(verA, ver);
-	CFont::SetScale(SCREEN_SCALE_X(0.5f), SCREEN_SCALE_Y(0.7f));
-#else
-	AsciiToUnicode(version_name, ver);
-	CFont::SetScale(SCREEN_SCALE_X(0.5f), SCREEN_SCALE_Y(0.5f));
-#endif
-
-	CFont::SetPropOn();
-	CFont::SetBackgroundOff();
-	CFont::SetFontStyle(FONT_STANDARD);
-	CFont::SetCentreOff();
-	CFont::SetRightJustifyOff();
-	CFont::SetWrapx(SCREEN_WIDTH);
-	CFont::SetJustifyOff();
-	CFont::SetBackGroundOnlyTextOff();
-	CFont::SetColor(CRGBA(255, 108, 0, 255));
-	CFont::PrintString(SCREEN_SCALE_X(10.0f), SCREEN_SCALE_Y(10.0f), ver);
-	}
-#endif // #ifdef DRAW_GAME_VERSION_TEXT
+	#ifdef DRAW_GAME_VERSION_TEXT
+		wchar ver[200];
+		if(gbDrawVersionText) // This realtime switch is our thing
+		{
+			AsciiToUnicode(version_name, ver);
+			CFont::SetScale(SCREEN_SCALE_X(0.3f), SCREEN_SCALE_Y(0.3f));
+			CFont::SetPropOn();
+			CFont::SetBackgroundOff();
+			CFont::SetFontStyle(FONT_STANDARD);
+			CFont::SetCentreOff();
+			CFont::SetRightJustifyOff();
+			CFont::SetWrapx(SCREEN_WIDTH);
+			CFont::SetJustifyOff();
+			CFont::SetBackGroundOnlyTextOff();
+			CFont::SetColor(CRGBA(255, 108, 0, 255));
+			CFont::PrintString(SCREEN_SCALE_X(10.0f), SCREEN_SCALE_Y(10.0f), ver);
+		}
+	#endif
 
 	FrameSamples++;
-#ifdef FIX_BUGS
-	// this is inaccurate with over 1000 fps
-	static uint32 PreviousTimeInMillisecondsPauseMode = 0;
-	FramesPerSecondCounter += (CTimer::GetTimeInMillisecondsPauseMode() - PreviousTimeInMillisecondsPauseMode) / 1000.0f; // convert to seconds
-	PreviousTimeInMillisecondsPauseMode = CTimer::GetTimeInMillisecondsPauseMode();
-	FramesPerSecond = FrameSamples / FramesPerSecondCounter;
-#else
-	FramesPerSecondCounter += 1000.0f / CTimer::GetTimeStepNonClippedInMilliseconds();
-	FramesPerSecond = FramesPerSecondCounter / FrameSamples;
-#endif
+	#ifdef FIX_BUGS
+		// this is inaccurate with over 1000 fps
+		static uint32 PreviousTimeInMillisecondsPauseMode = 0;
+		FramesPerSecondCounter += (CTimer::GetTimeInMillisecondsPauseMode() - PreviousTimeInMillisecondsPauseMode) / 1000.0f; // convert to seconds
+		PreviousTimeInMillisecondsPauseMode = CTimer::GetTimeInMillisecondsPauseMode();
+		FramesPerSecond = FrameSamples / FramesPerSecondCounter;
+	#else
+		FramesPerSecondCounter += 1000.0f / CTimer::GetTimeStepNonClippedInMilliseconds();
+		FramesPerSecond = FramesPerSecondCounter / FrameSamples;
+	#endif
 	
 	if ( FrameSamples > 30 )
 	{
@@ -1510,9 +1476,6 @@ void
 Render2dStuffAfterFade(void)
 {
 	PUSH_RENDERGROUP("Render2dStuffAfterFade");
-#ifndef MASTER
-	DisplayGameDebugText();
-#endif
 
 #ifdef MOBILE_IMPROVEMENTS
 	if (CDraw::FadeValue != 0)
@@ -1807,7 +1770,7 @@ AppEventHandler(RsEvent event, void *param)
 	}
 }
 
-#ifndef MASTER
+#ifndef LCSR_MASTER
 void
 TheModelViewer(void)
 {
